@@ -1,0 +1,89 @@
+#include <iostream>
+#include <String>
+#include <Windows.h>
+using namespace std;
+
+int main()
+{
+	int colvo =  0;
+	cout.precision(2);
+	SetConsoleCP(1251);// установка кодовой страницы win-cp 1251 в поток ввода
+	SetConsoleOutputCP(1251); // установка кодовой страницы win-cp 1251 в поток вывода
+	cout << "По какому количеству критериев будет проводиться сравнение: ";
+	cin >> colvo;
+	cin.ignore();
+
+	//Подготовка заготовок
+	int *AbsCrt = new int[colvo];
+	double **arr;
+	string* criteries = new string[colvo + 2];
+	arr = new double*[colvo+1];
+	for (int i = 0; i < colvo+1; i++)
+	{
+		arr[i] = new double[colvo + 2];
+	}
+
+	//Вводим критерии
+	string temp;
+	for (int i = 0; i < colvo; i++)
+	{
+		cout << "Введите " << i << "-ый" << " критерий: ";
+		getline(cin, temp);
+		criteries[i] = temp;
+	}
+	criteries[colvo] = "Cумма";
+	criteries[colvo+1] = "Коэффициент";
+	cout << "Этап завершён" << endl;
+
+	//Оцениваем признаки 
+	int temp1;
+	cout << "Дайте оценку от 0 до 10 следующим признакам (целыми числами):" << endl;
+	for (int i = 0; i < colvo; i++)
+	{
+		cout << criteries[i] << ": ";
+		cin >> temp1;
+		AbsCrt[i] = temp1;
+	}
+
+
+	//Заполняем матрицу
+	float MatrixSumm = 0;
+	for (int i = 0; i < colvo; i++)
+	{
+		for (int j = 0; j < colvo; j++)
+		{
+			arr[i][j] = float(AbsCrt[i])/ AbsCrt[j];
+			MatrixSumm += arr[i][j];
+		}
+		arr[i][colvo] = MatrixSumm;
+		MatrixSumm = 0;
+	}
+
+	
+	//Расчитываем коэффициенты
+	
+	for (int i = 0; i < colvo; i++)
+	{
+		MatrixSumm += arr[i][colvo];
+	}
+	for (int i = 0; i < colvo; i++)
+	{
+		arr[i][colvo+1] = arr[i][colvo] / MatrixSumm ;
+	}
+
+	//Вывод резултатов
+	for (int i = 0; i < colvo+2; i++)
+	{
+		cout << "\t" << criteries[i];
+	}
+	cout << endl;
+	for (int i = 0; i < colvo; i++)
+	{
+		for (int j = 0; j < colvo + 2; j++)
+		{
+			cout << "\t" << arr[i][j] << " ";
+		}
+	}
+
+	return 0;
+}
