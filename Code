@@ -1,88 +1,123 @@
 #include <iostream>
 #include <String>
 #include <Windows.h>
+#include <iomanip>
 using namespace std;
 
 int main()
 {
-	int colvo =  0;
+	
 	cout.precision(2);
 	SetConsoleCP(1251);// установка кодовой страницы win-cp 1251 в поток ввода
 	SetConsoleOutputCP(1251); // установка кодовой страницы win-cp 1251 в поток вывода
-	cout << "По какому количеству критериев будет проводиться сравнение: ";
-	cin >> colvo;
-	cin.ignore();
-
-	//Подготовка заготовок
-	int *AbsCrt = new int[colvo];
-	double **arr;
-	string* criteries = new string[colvo + 2];
-	arr = new double*[colvo+1];
-	for (int i = 0; i < colvo+1; i++)
+	string Answer = "Да";
+	while (Answer == "Да")
 	{
-		arr[i] = new double[colvo + 2];
-	}
+		int colvo = 0;
+		cout << "По какому количеству критериев будет проводиться сравнение: ";
+		cin >> colvo;
+		cin.ignore();
 
-	//Вводим критерии
-	string temp;
-	for (int i = 0; i < colvo; i++)
-	{
-		cout << "Введите " << i << "-ый" << " критерий: ";
-		getline(cin, temp);
-		criteries[i] = temp;
-	}
-	criteries[colvo] = "Cумма";
-	criteries[colvo+1] = "Коэффициент";
-	cout << "Этап завершён" << endl;
-
-	//Оцениваем признаки 
-	int temp1;
-	cout << "Дайте оценку от 0 до 10 следующим признакам (целыми числами):" << endl;
-	for (int i = 0; i < colvo; i++)
-	{
-		cout << criteries[i] << ": ";
-		cin >> temp1;
-		AbsCrt[i] = temp1;
-	}
-
-
-	//Заполняем матрицу
-	float MatrixSumm = 0;
-	for (int i = 0; i < colvo; i++)
-	{
-		for (int j = 0; j < colvo; j++)
+		//Подготовка заготовок
+		int *AbsCrt = new int[colvo];
+		double **arr;
+		string* criteries = new string[colvo + 2];
+		arr = new double*[colvo + 1];
+		for (int i = 0; i < colvo + 1; i++)
 		{
-			arr[i][j] = float(AbsCrt[i])/ AbsCrt[j];
-			MatrixSumm += arr[i][j];
+			arr[i] = new double[colvo + 2];
 		}
-		arr[i][colvo] = MatrixSumm;
-		MatrixSumm = 0;
-	}
 
-	
-	//Расчитываем коэффициенты
-	
-	for (int i = 0; i < colvo; i++)
-	{
-		MatrixSumm += arr[i][colvo];
-	}
-	for (int i = 0; i < colvo; i++)
-	{
-		arr[i][colvo+1] = arr[i][colvo] / MatrixSumm ;
-	}
-
-	//Вывод резултатов
-	for (int i = 0; i < colvo+2; i++)
-	{
-		cout << "\t" << criteries[i];
-	}
-	cout << endl;
-	for (int i = 0; i < colvo; i++)
-	{
-		for (int j = 0; j < colvo + 2; j++)
+		//Вводим критерии
+		string temp;
+		for (int i = 0; i < colvo; i++)
 		{
-			cout << "\t" << arr[i][j] << " ";
+			cout << "Введите " << i + 1 << "-ый" << " критерий (Рекомендуемая длинна не более 5-7 симовлов): ";
+			getline(cin, temp);
+			//temp = temp.substr(0, 7); //Возможно лучше поступить по жёсткому
+			criteries[i] = temp;
 		}
+		criteries[colvo] = "Cумма";
+		criteries[colvo + 1] = "Коэффициент";
+		cout << "Этап завершён" << endl;
+
+		//Оцениваем признаки 
+		float temp1;
+		cout << "Дайте оценку от 1 до 10 следующим признакам (целыми числами):" << endl;
+		for (int i = 0; i < colvo; i++)
+		{
+			cout << criteries[i] << ": ";
+			cin >> temp1;
+			if (temp1 != floor(temp1))
+				cout << "Введено дробное число, дробная часть уничтожена" << endl;
+			if (temp1 > 10)
+			{
+				cout << "Превышена максимальная оценка, установлена максимально допустимая" << endl;
+				AbsCrt[i] = 10;
+			}
+			else if (temp1 < 1)
+			{
+				cout << "Превышена минимальная оценка, установлена минимальная допустимая" << endl;
+				AbsCrt[i] = 1;
+			}
+			else
+				AbsCrt[i] = floor(temp1);
+		}
+
+
+		//Заполняем матрицу
+		float MatrixSumm = 0;
+		for (int i = 0; i < colvo; i++)
+		{
+			for (int j = 0; j < colvo; j++)
+			{
+				arr[i][j] = float(AbsCrt[i]) / AbsCrt[j];
+				MatrixSumm += arr[i][j];
+			}
+			arr[i][colvo] = MatrixSumm;
+			MatrixSumm = 0;
+		}
+
+
+		//Расчитываем коэффициенты
+
+		for (int i = 0; i < colvo; i++)
+		{
+			MatrixSumm += arr[i][colvo];
+		}
+		for (int i = 0; i < colvo; i++)
+		{
+			arr[i][colvo + 1] = arr[i][colvo] / MatrixSumm;
+		}
+
+		//Вывод резултатов
+		cout << "Весовые коэффициенты для критерьев: " << endl;
+		for (int i = 0; i < colvo; i++)
+		{
+			cout << criteries[i] << ": " << arr[i][colvo + 1] << endl;
+		}
+
+		cout << "Хотите ли вы увидеть таблицу, построенную по вашим данным? " << endl;
+		cin >> temp;
+		if (temp == "Да")
+		{
+			for (int i = 0; i < colvo + 2; i++)
+			{
+				cout << "\t" << criteries[i];
+			}
+			cout << endl;
+			for (int i = 0; i < colvo; i++)
+			{
+				//cout << "\t";
+				for (int j = 0; j < colvo + 2; j++)
+				{
+					cout << "\t" << arr[i][j] << " ";
+				}
+				cout << endl;
+			}
+		}
+		cout << "Расчитать ещё веса коэффициентов? " << endl;
+		cin >> Answer;
 	}
 
 	return 0;
