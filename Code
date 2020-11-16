@@ -14,9 +14,15 @@ int main()
 	while (Answer == "Да")
 	{
 		int colvo = 0;
-		cout << "По какому количеству критериев будет проводиться сравнение: ";
-		cin >> colvo;
-		cin.ignore();
+		while (colvo <= 0)
+		{
+			cout << "По какому количеству критериев будет проводиться сравнение: ";
+			cin >> colvo;
+			cin.ignore();
+			colvo = abs(colvo);
+			if (colvo <= 0)
+				cout << "Количество критериев не может быть ниже или равным 0 " << endl;
+		}
 
 		//Подготовка заготовок
 		int *AbsCrt = new int[colvo];
