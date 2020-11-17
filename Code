@@ -49,26 +49,47 @@ int main()
 
 		//Оцениваем признаки 
 		float temp1;
-		cout << "Дайте оценку от 1 до 10 следующим признакам (целыми числами):" << endl;
+		cout << "Дайте оценку от 0 до 10 следующим соотношениям (целыми числами): " << endl;
+		cout << " 0 - слабая важность, А намного проигрывает в важности Б " << endl;
+		cout << " 5 - сопастовимая важность, А примерно также важно как Б" << endl;
+		cout << " 10 - сильная важность, А намного важнее чем Б" << endl;
 		for (int i = 0; i < colvo; i++)
 		{
-			cout << criteries[i] << ": ";
-			cin >> temp1;
-			if (temp1 != floor(temp1))
-				cout << "Введено дробное число, дробная часть уничтожена" << endl;
-			if (temp1 > 10)
+			for (int j = i; j < colvo; j++)
 			{
-				cout << "Превышена максимальная оценка, установлена максимально допустимая" << endl;
-				AbsCrt[i] = 10;
+				if (i == j)
+				{
+					arr[i][j] = 5;
+				}
+				else
+				{
+					cout << "Насколько " << criteries[i] << " важнее " << criteries[j] << ": ";
+					cin >> temp1;
+					//Блок защиты
+					if (temp1 != floor(temp1))
+						cout << "Введено дробное число, дробная часть уничтожена" << endl;
+					if (temp1 > 10)
+					{
+						cout << "Превышена максимальная оценка, установлена максимально допустимая" << endl;
+						arr[i][j] = 10;
+					}
+					else if (temp1 < 0)
+					{
+						cout << "Превышена минимальная оценка, установлена минимальная допустимая" << endl;
+						arr[i][j] = 0;
+					}
+					else
+					{
+						arr[i][j] = temp1;
+					}
+					// Присваивание обратного элемента
+					arr[j][i] = 10 - arr[i][j];
+
+				}
 			}
-			else if (temp1 < 1)
-			{
-				cout << "Превышена минимальная оценка, установлена минимальная допустимая" << endl;
-				AbsCrt[i] = 1;
-			}
-			else
-				AbsCrt[i] = floor(temp1);
 		}
+
+		
 
 
 		//Заполняем матрицу
@@ -77,7 +98,7 @@ int main()
 		{
 			for (int j = 0; j < colvo; j++)
 			{
-				arr[i][j] = float(AbsCrt[i]) / AbsCrt[j];
+	//			arr[i][j] = float(AbsCrt[i]) / AbsCrt[j];
 				MatrixSumm += arr[i][j];
 			}
 			arr[i][colvo] = MatrixSumm;
@@ -93,7 +114,10 @@ int main()
 		}
 		for (int i = 0; i < colvo; i++)
 		{
-			arr[i][colvo + 1] = arr[i][colvo] / MatrixSumm;
+			if (MatrixSumm == 0)
+				arr[i][colvo + 1] = 0;
+			else
+				arr[i][colvo + 1] = arr[i][colvo] / MatrixSumm;
 		}
 
 		//Вывод резултатов
@@ -114,6 +138,9 @@ int main()
 			cout << endl;
 			for (int i = 0; i < colvo; i++)
 			{
+				
+					cout  << criteries[i];
+
 				//cout << "\t";
 				for (int j = 0; j < colvo + 2; j++)
 				{
