@@ -19,4 +19,4 @@
 
 ## Скриншот работы
 
-![Alt-текст](https://github.com/GunbinSergey/Method-of-Saati/blob/main/Consol.psd "Консоль")
+![Alt-текст](https://github.com/GunbinSergey/Method-of-Saati/blob/main/Consol.png "Консоль")
